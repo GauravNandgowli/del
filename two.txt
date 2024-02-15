@@ -1,0 +1,107 @@
+import java.util.Scanner;
+public class gpt1
+{
+     int D[], num;
+    static int max = 999;
+    public gpt1(int num)
+    {
+        this.num = num;
+        D = new int[num + 1];
+    }
+    public void BellmanFordEvaluation(int src, int A[][])
+    {
+        for (int i = 1; i <= num; i++)
+        {
+            D[i] = max;
+        }
+
+        D[src] = 0;
+
+
+
+
+        for (int i = 1; i <= num - 1; i++)
+        {
+            for (int j = 1; j <= num; j++)
+            {
+                for (int k = 1; k <= num; k++)
+                {
+                    if (A[j][k] != max)
+                    {
+                        if (D[k] > D[j]+ A[j][k])
+                            D[k] = D[j] + A[j][k];
+                    }
+                }
+            }
+        }
+
+
+
+
+
+        for (int i = 1; i <= num; i++)
+        {
+            for (int j = 1; j <= num; j++)
+            {
+                if (A[i][j] != max)
+                {
+                    if (D[j] > D[i]+ A[i][j])
+                        System.out.println("The Graph contains negative egde cycle");
+                }
+            }
+        }
+
+
+
+        for (int i = 1; i <= num; i++)
+        {
+            System.out.println("distance of source " + src + " to "+ i + "  is " + D[i]);
+        }
+
+
+
+
+    }
+
+
+
+
+
+
+
+    public static void main(String[ ] args)
+    {
+        Scanner sc = new Scanner(System.in);
+
+        int num = 0, src;
+        System.out.println("Enter the number of vertices");
+        num = sc.nextInt();
+
+        int A[][] = new int[num + 1][num + 1];
+        System.out.println("Enter the adjacency matrix");
+
+        for (int i = 1; i <= num; i++) {
+            for (int j = 1; j <= num; j++){
+                A[i][j] = sc.nextInt();
+
+                if (i == j)
+                {
+                    A[i][j] = 0;
+                    continue;
+                }
+
+                if (A[i][j] == 0)
+                {
+                    A[i][j] = max;
+                }
+            }
+        }
+        System.out.println("Enter the source vertex");
+        src = sc.nextInt();
+
+        gpt1 b = new gpt1(num);
+
+        b.BellmanFordEvaluation(src, A);
+
+    }
+}

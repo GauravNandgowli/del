@@ -1,0 +1,74 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter data bits : ");
+        String dataInput = scanner.nextLine();
+        int[] dataBits = convertStringToArray(dataInput);
+
+        System.out.println("Enter Divisor bits : ");
+        String divisorInput = scanner.nextLine();
+        int[] divisorBits = convertStringToArray(divisorInput);
+
+        int totalLength = dataInput.length() + divisorInput.length() - 1;
+        int[] crc = new int[totalLength];
+        System.arraycopy(dataBits, 0, crc, 0, dataBits.length);
+
+        int[] remainder = divide(crc, divisorBits);
+
+        for (int i = 0; i < crc.length; i++) {
+            crc[i] = (crc[i] ^ remainder[i]);
+        }
+
+        System.out.println("CRC code : ");
+        for (int i : crc)
+            System.out.print(i);
+        System.out.println();
+
+        System.out.println("Enter CRC code of "+totalLength+" bits : ");
+        for(int i=0; i<crc.length; i++)
+            crc[i]=Integer.parseInt(scanner.nextLine());
+        
+        remainder = divide(crc, divisorBits);
+
+        for(int i=0; i< remainder.length; i++)
+        {
+            if(remainder[i]!=0)
+            {
+                System.out.println("Error");
+                break;
+            }
+            if(i==remainder.length-1)
+                System.out.println("No Error");
+        }
+        System.out.println("THANK YOU.... :)");
+    }
+
+    static int[] divide(int[] dividend, int[] divisor) {
+        int[] remainder = new int[dividend.length];
+        System.arraycopy(dividend, 0, remainder, 0, dividend.length);
+
+        int currentIndex = 0;
+        while (true) {
+            for (int i = 0; i < divisor.length; i++)
+                remainder[currentIndex + i] = (remainder[currentIndex + i] ^ divisor[i]);
+
+            while (remainder[currentIndex] == 0 && currentIndex != remainder.length - 1)
+                currentIndex++;
+
+            if ((remainder.length - currentIndex) < divisor.length)
+                break;
+        }
+        return remainder;
+    }
+
+    static int[] convertStringToArray(String str) {
+        int[] arr = new int[str.length()];
+        for (int i = 0; i < str.length(); i++) {
+            arr[i] = Integer.parseInt(String.valueOf(str.charAt(i)));
+        }
+        return arr;
+    }
+}
